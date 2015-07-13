@@ -26,6 +26,11 @@ module SoftDeletion
           select { |a| a.klass.method_defined?(:soft_delete!) }.map(&:name)
       end
 
+      def find_with_deleted(*user_conditions)
+        method = (ActiveRecord::VERSION::MAJOR >= 4 ? :unscoped : :with_exclusive_scope)
+        send(method).find(*user_conditions)
+      end
+
       def with_deleted
         method = (ActiveRecord::VERSION::MAJOR >= 4 ? :unscoped : :with_exclusive_scope)
         send(method) do
